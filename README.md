@@ -57,6 +57,7 @@ let Mock = require('../../')
 
 let app = new Mock({
   config: path.join(__dirname, './mock/config'), // 配置文件
+  port: 8009,                     // 自定义端口
   watch: true,                    // 观察模式，监听配置文件改动自动应用
   log: path.join(__dirname, './mock/log') // 请求信息以log形式输出
 })
