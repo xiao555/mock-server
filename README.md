@@ -76,7 +76,7 @@ node mock.js
 
 ```bash
 // Install
-npm install -g node-mock
+npm install -g cf-mock-server
 
 // CLI
 Usage: mock [options] <file ...>
@@ -97,7 +97,7 @@ Options:
 
 ```shell
 // Install
-npm install node-mock --save-dev
+npm install cf-mock-server --save-dev
 ```
 
 ## Configuration
