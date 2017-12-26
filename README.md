@@ -100,7 +100,7 @@ Options:
 npm install cf-mock-server --save-dev
 ```
 
-## Configuration
+## Configuration
 
 配置文件可以是JS,也可以是JSON，JS方便给API添加注释，JSON不能加注释
 
@@ -150,12 +150,12 @@ Module: 传入`{ watch: true }`
 CLI: 添加 `-L/ -l` 参数
 Module: 传入`{ log: \PATHTOSAVELOG\ }`
 
-### 3. API优先匹配
+### 3. API优先匹配
 
 1. 优先匹配，匹配到一个后，后面的不会再去匹配
 1. 不带参数的只能匹配到不带参数的
-1. 带参数的请求只要配置项的参数都能匹配到，如果不全也算匹配成功，例如请求'/user/?name=tom&age=18' 也会匹配 '/user/?name=tom'
-1. 参数会变化的值可以用`*`占位，不会去计算值是否相等
+1. 带参数的请求只要配置项的参数都能匹配到，如果不全也算匹配成功，例如请求'/user/?name=tom&age=18' 也会匹配 '/user/?name=tom'
+1. 参数会变化的值可以用`*`占位，不会去计算值是否相等
 
 例如Config：
 
