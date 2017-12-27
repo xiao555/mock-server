@@ -10,6 +10,8 @@
 // config.js
 // 数据目录
 exports.dataFile = '../{YOUDATAFOLDER}'
+// 静态资源
+exports.staticFile = '../static'
 /**
  * KEY: '{METHOD} {router}'
  * VALUE: 数据文件路径，相对于dataFile
@@ -32,6 +34,11 @@ exports.api = {
   - users
     - tom.json
     - example.json
+- static
+  - image
+    - hello.jpg
+  - audio
+    - scan-ok.ogg
 ```
 
 ### 开启服务:
@@ -42,11 +49,16 @@ exports.api = {
 mock -w -c config.js
 ```
 
-当你访问 `http://localhost:8008/api/users/all` 的时候, 你会得到 `all_user.json`.
+数据的访问:
+访问 `http://localhost:8008/api/users/all` 会得到 `all_user.json`
 访问 `http://localhost:8008/api/users//?name=tom` 会得到  `users/tom.json`
-`http://localhost:8008/api/users//?name=jerry` 会得到 `users/example.json`
+访问 `http://localhost:8008/api/users//?name=jerry` 会得到 `users/example.json`
 
-具体例子可见`example/custom-config`
+静态资源的访问：
+`http://localhost:8008/image/hello.jpg`
+`http://localhost:8008/audio/scan-ok.ogg`
+
+具体例子可见`example/default`
 
 #### 2. 创建启动文件(Module)
 
@@ -111,6 +123,8 @@ JS:
 // example/default/mock/config.js
 // mock data storage directory
 exports.dataFile = '../data'
+// static
+exports.staticFile = '../static'
 /**
  * KEY: '{METHOD} {router}'
  * VALUE: path relative to the dataFile
@@ -131,6 +145,7 @@ JSON:
 // example/custom-config/config.json
 {
   "dataFile": "./data",
+  "staticFile": "../static",
   "api": {
     "GET /api/users/all": "all_users.json",
     "GET /api/users/?name=tom": "users/tom.json",
@@ -170,6 +185,10 @@ Module: 传入`{ log: \PATHTOSAVELOG\ }`
 ```
 
 访问 `/user/?name=tom` 会匹配到 `tom.json`, 访问 `/user/?name=*` 会匹配到 `b.json`
+
+### 4. 支持访问静态资源
+
+因为配置项目代理的时候可能会影响到静态资源的访问，所以在mock server中加入静态资源访问，只需要提供静态资源的路径即可
 
 ## LICENSE
 

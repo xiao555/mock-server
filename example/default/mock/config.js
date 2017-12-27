@@ -1,6 +1,7 @@
 // config.js
 // mock data storage directory
 exports.dataFile = '../data'
+exports.staticFile = '../static'
 /**
  * KEY: '{METHOD} {router}'
  * VALUE: path relative to the dataFile
