@@ -172,6 +172,7 @@ Module: 传入`{ log: \PATHTOSAVELOG\ }`
 1. 不带参数的只能匹配到不带参数的
 1. 带参数的请求只要配置项的参数都能匹配到，如果不全也算匹配成功，例如请求'/user/?name=tom&age=18' 也会匹配 '/user/?name=tom'
 1. 参数会变化的值可以用`*`占位，不会去计算值是否相等
+1. 参数数组中的某些值也可以用`*`占位，例如`name=tom&&name=jerry&&name=*` 可以被 `name=tom&&name=jerry&&name=obama` 匹配到
 
 例如Config：
 
