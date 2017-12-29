@@ -22,11 +22,11 @@ exports.staticFile = '../static'
  */
 exports.api = {
   // GET all user
-  'GET /api/users/all': 'all_users.json',
+  'GET /api/users/all': 'all_users.txt',
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=*': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
 }
 ```
 
@@ -34,7 +34,7 @@ exports.api = {
 
 ```shell
 - dataFile
-  - all_user.json
+  - all_user.txt
   - users
     - tom.json
     - example.json
@@ -135,11 +135,11 @@ exports.staticFile = '../static'
  */
 exports.api = {
   // GET all user
-  'GET /api/users/all': 'all_users.json',
+  'GET /api/users/all': 'all_users.txt',
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=*': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
 }
 ```
 
@@ -151,9 +151,9 @@ JSON:
   "dataFile": "./data",
   "staticFile": "../static",
   "api": {
-    "GET /api/users/all": "all_users.json",
+    "GET /api/users/all": "all_users.txt",
     "GET /api/users/?name=tom": "users/tom.json",
-    "GET /api/users/?name=*": "users/example.json"
+    "GET /api/users/?name=/^A.*\\/$/": "users/example.json"
   }
 }
 ```
@@ -194,6 +194,37 @@ Module: 传入`{ log: \PATHTOSAVELOG\ }`
 ### 4. 支持访问静态资源
 
 因为配置项目代理的时候可能会影响到静态资源的访问，所以在mock server中加入静态资源访问，只需要提供静态资源的路径即可
+
+### 5. 支持自定义Response Headers
+
+自定义响应头，需要数据文件改成txt，格式如下：
+
+``` bash
+HTTP/1.1 200 OK # Will ignore this line
+Date: Wed, 26 Apr 2017 09:32:13 GMT
+Content-Length: 1823
+Cache-Control: max-age=0, must-revalidate
+Content-Type: application/json
+X-Resource-Count: 3 # custom header
+
+[
+  {
+    "name": "tom"
+  },
+  {
+    "name": "jerry"
+  }
+]
+```
+
+### 6. 参数支持正则表达式匹配
+
+```javascript
+exports.api = {
+  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
+}
+```
+将会匹配A开头/结尾的参数值
 
 ## LICENSE
 
