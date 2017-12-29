@@ -1,12 +1,13 @@
 {
   "name": "cf-mock-server",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A mock server for REST API by koa",
   "main": "entry.js",
   "scripts": {
     "demo": "cd example/default && node ../../bin/mock -w",
     "custom-config": "node bin/mock -w -c example/custom-config/config.json",
     "without-cli": "node example/without-cli/mock.js",
+    "simple": "node example/simple/mock.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "xiao555 <zhangruiwu32@gmail.com>",

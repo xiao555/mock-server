@@ -5,8 +5,38 @@
 [![](https://travis-ci.org/xiao555/mock-server.svg?branch=master)](https://travis-ci.org/xiao555/mock-server)
 [![npm](https://img.shields.io/npm/dt/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![npm](https://img.shields.io/npm/v/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
+[![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xiao555/mock-server/blob/master/LICENSE)
 
-## Example
+## 3分钟创建你的Mock Server
+
+```javascript
+// index.js
+let Mock = require('cf-mock-server')
+
+let app = new Mock({
+  config: {
+    api: {
+      'GET /api/users/all': '[{"name":"tom"},{"name":"jerry"}]',
+      'GET /api/users/?name=tom': '{"name":"tom","age":18}',
+      'GET /api/users/?name=/^A.*\\^$/': '{"name":"jack","age":18}'
+      'GET /api/users/?name=*': '{"name":"rose","age":18}'
+    }
+  }
+})
+
+app.run()
+```
+安装依赖并执行：
+```
+npm i cf-mock-server --save-dev
+
+node index.js
+```
+
+浏览器访问 `http://localhost:8008/api/users/all`, 即可得到`[{"name":"tom"},{"name":"jerry"}]`
+
+## More Example
 
 ### 创建配置文件
 
