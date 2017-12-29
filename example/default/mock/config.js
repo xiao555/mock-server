@@ -12,5 +12,5 @@ exports.api = {
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
 }

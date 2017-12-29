@@ -26,7 +26,7 @@ exports.api = {
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
 }
 ```
 
@@ -139,7 +139,7 @@ exports.api = {
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
 }
 ```
 
@@ -153,7 +153,7 @@ JSON:
   "api": {
     "GET /api/users/all": "all_users.txt",
     "GET /api/users/?name=tom": "users/tom.json",
-    "GET /api/users/?name=/^A.*\\/$/": "users/example.json"
+    "GET /api/users/?name=/^A.*\\^$/": "users/example.json"
   }
 }
 ```
@@ -189,13 +189,23 @@ Module: 传入`{ log: \PATHTOSAVELOG\ }`
 }
 ```
 
-访问 `/user/?name=tom` 会匹配到 `tom.json`, 访问 `/user/?name=*` 会匹配到 `b.json`
+访问 `/user/?name=tom` 会匹配到 `tom.json`, 访问 `/user/?name=jerry` 会匹配到 `b.json`
 
 ### 4. 支持访问静态资源
 
 因为配置项目代理的时候可能会影响到静态资源的访问，所以在mock server中加入静态资源访问，只需要提供静态资源的路径即可
 
-### 5. 支持自定义Response Headers
+``` javascript
+// js
+exports.staticFile = '../static'
+
+// json
+{
+  "staticFile": "../static"
+}
+```
+
+### 5. 支持自定义Response Headers
 
 自定义响应头，需要数据文件改成txt，格式如下：
 
@@ -221,10 +231,10 @@ X-Resource-Count: 3 # custom header
 
 ```javascript
 exports.api = {
-  'GET /api/users/?name=/^A.*\\/$/': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
 }
 ```
-将会匹配A开头/结尾的参数值
+将会匹配A开头/结尾的参数值, 注意这里的`\\`，因为是通过`new RegExp({String})`来创建RegExp对象的，所以需要两个`\`使`{String}`里有一个`\`
 
 ## LICENSE
 
