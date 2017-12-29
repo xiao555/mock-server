@@ -5,7 +5,7 @@
 [![](https://travis-ci.org/xiao555/mock-server.svg?branch=master)](https://travis-ci.org/xiao555/mock-server)
 [![npm](https://img.shields.io/npm/dt/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![npm](https://img.shields.io/npm/v/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
-[![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg)](http://nodejs.org/download/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xiao555/mock-server/blob/master/LICENSE)
 
 ## 3分钟创建你的Mock Server
