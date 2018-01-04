@@ -8,7 +8,8 @@ exports.dataFile = '../data'
  */
 exports.api = {
   // GET all user
-  'GET /users/all': 'all_users.txt',
+  'GET /users/all': 'all_users',
+  'GET /users/all?name=sam': 'users/example',
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   // GET user whatever the name is

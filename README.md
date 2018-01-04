@@ -19,7 +19,7 @@ let app = new Mock({
     api: {
       'GET /api/users/all': '[{"name":"tom"},{"name":"jerry"}]',
       'GET /api/users/?name=tom': '{"name":"tom","age":18}',
-      'GET /api/users/?name=/^A.*\\^$/': '{"name":"jack","age":18}'
+      'GET /api/users/?name=/^A.*\\^$/': '{"name":"jack","age":18}',
       'GET /api/users/?name=*': '{"name":"rose","age":18}'
     }
   }
@@ -265,6 +265,17 @@ exports.api = {
 }
 ```
 将会匹配A开头/结尾的参数值, 注意这里的`\\`，因为是通过`new RegExp({String})`来创建RegExp对象的，所以需要两个`\`使`{String}`里有一个`\`
+
+### 7. 数据文件路径可以不带扩展名
+
+会自动匹配*.json或者*.txt
+```javascript
+exports.api = {
+  // GET all user
+  'GET /users/all': 'all_users',
+  'GET /users/all?name=sam': 'users/example'
+}
+```
 
 ## LICENSE
 
