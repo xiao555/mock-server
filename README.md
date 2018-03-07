@@ -188,6 +188,34 @@ JSON:
 }
 ```
 
+## 搭配Vue-cli项目
+
+``` javascript
+// config/index.js
+dev: {
+    env: require('./dev.env'),
+    port: 8080,
+    autoOpenBrowser: true,
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    proxyTable: {
+      '/home': {
+        target: 'http://127.0.0.1:8008',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/home': '/home'
+        }
+      },
+      '/api': {
+        target: 'http://127.0.0.1:8008',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/api'
+        }
+      }
+    },
+```
+
 ## Features
 
 ### 1. 监听配置文件改变自动应用
@@ -277,6 +305,28 @@ exports.api = {
 }
 ```
 
+### 8. 支持RESTful API
+
+``` javascript
+exports.api = {
+  'GET /api/v1/users/tom': 'users/tom.json',
+  'GET /api/v1/users/*': 'users/example',
+  'GET /api/v1/*/tom': 'users/tom.json',
+  'GET /api/**/tom': 'users/tom.json',
+}
+
+// * 匹配任意字符串
+// ** 匹配任意长度 /*/*/*/...
+```
+
+### 9. 支持js 数据文件
+
+``` javascript
+module.exports = {
+  "name": "jerry",
+  "age": 18 // age
+}
+```
 ## LICENSE
 
 MIT

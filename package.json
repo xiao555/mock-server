@@ -1,6 +1,6 @@
 {
   "name": "cf-mock-server",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "A mock server for REST API by koa",
   "main": "entry.js",
   "scripts": {
@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^2.12.2",
+    "crlf": "^1.1.1",
     "debug": "^3.1.0",
     "glob": "^7.1.2",
     "koa": "^2.4.1",
