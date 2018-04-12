@@ -9,6 +9,8 @@
 [![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg)](http://nodejs.org/download/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xiao555/mock-server/blob/master/LICENSE)
 
+![](https://xiao555.netlify.com/mock-server.png)
+
 ## 3分钟创建你的Mock Server
 
 ```javascript
