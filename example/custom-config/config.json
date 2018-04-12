@@ -2,6 +2,9 @@
   "dataFile": "./data",
   "api": {
     "GET /api/users/all": "all_users.json",
+    "GET /api/users/1/name": "all_users.json",
+    "GET /api/users/*/": "users/example.json",
+    "GET /api/**/1/": "users/tom.json",
     "GET /api/users/?name=tom&age=18": "users/example.json",
     "GET /api/users/?name=tom": "users/tom.json",
     "GET /api/users/?name=/^A.*\\^$/": "users/example.json"

@@ -16,6 +16,7 @@ const Mock = require('../');
 const utils = Mock.utils;
 const join = path.join;
 const cwd = process.cwd();
+const log = require('../lib/utils/log')
 const mock = new Mock();
 
 /**
@@ -38,8 +39,6 @@ program
   .option('-p, --port <port>', 'Define the mock server started port, default is 8008')
   .option('-w, --watch', 'Listen to the file changes and restart the service')
   .option('-c, --config <file>', 'Custom profiles, default is mock/config.js')
-  .option('-l, --log', 'Record the log and save to "mock/log/" and named {date}.log')
-  .option('-L, --Log <path>', 'Record the log and save to <path>, default "mock/log/" and named {date}.log')
 
 
 program._name = 'mock';
@@ -76,16 +75,6 @@ if (program.port) {
   mock.setPort(program.port)
 }
 
-// log
-if (program.log) {
-  mock.showLog(path.resolve(cwd, 'mock/log/'))
-}
-
-// Log
-if (program.Log) {
-  mock.showLog(path.resolve(cwd, program.Log))
-}
-
 // --watch
 
 let loadAndRun;
@@ -93,9 +82,9 @@ let purge;
 let rerun;
 
 if (program.watch) {
-  console.log('>> Watch mode');
+  log.debug('>> Watch mode');
   process.on('SIGINT', () => {
-    console.log('\n>> Exit.\n');
+    log.debug('\n>> Exit.\n');
     process.exit(130);
   });
 
@@ -104,7 +93,7 @@ if (program.watch) {
       mock.file = file;
       mock.run()
     } catch (e) {
-      console.log(e.stack);
+      log.error(e.stack);
     }
   };
   // delete 旧的引用
@@ -120,7 +109,7 @@ if (program.watch) {
   };
 
   utils.watch([file], () => {
-    console.log('File changed!')
+    log.debug('File changed!')
     rerun();
   });
 } else {

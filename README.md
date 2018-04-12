@@ -105,7 +105,6 @@ let app = new Mock({
   config: path.join(__dirname, './mock/config'), // 配置文件
   port: 8009,                     // 自定义端口
   watch: true,                    // 观察模式，监听配置文件改动自动应用
-  log: path.join(__dirname, './mock/log') // 请求信息以log形式输出
 })
 
 app.run()
@@ -135,8 +134,6 @@ Options:
   -p, --port <port>    Define the mock server started port, default is 8008
   -w, --watch          Listen to the file changes and restart the service
   -c, --config <file>  Custom profiles, default is mock/config.js
-  -l, --log            Record the log and save to "mock/log/" and named {date}.log
-  -L, --Log <path>     Record the log and save to <path>, default "mock/log/" and named {date}.log
   -h, --help           output usage information
 ```
 
@@ -218,38 +215,12 @@ dev: {
 
 ## Features
 
-### 1. 监听配置文件改变自动应用
+### 1. 热重载路由
 
 CLI: 添加 `-w/--watch` 参数
 Module: 传入`{ watch: true }`
 
-### 2. 记录日志
-
-CLI: 添加 `-L/ -l` 参数
-Module: 传入`{ log: \PATHTOSAVELOG\ }`
-
-### 3. API优先匹配
-
-1. 优先匹配，匹配到一个后，后面的不会再去匹配
-1. 不带参数的只能匹配到不带参数的
-1. 带参数的请求只要配置项的参数都能匹配到，如果不全也算匹配成功，例如请求'/user/?name=tom&age=18' 也会匹配 '/user/?name=tom'
-1. 参数会变化的值可以用`*`占位，不会去计算值是否相等
-1. 参数数组中的某些值也可以用`*`占位，例如`name=tom&&name=jerry&&name=*` 可以被 `name=tom&&name=jerry&&name=obama` 匹配到
-
-例如Config：
-
-```json
-{
-  "/user": "all.json",
-  "/user/?name=tom&age=18": "tom.json",
-  "/user/?name=tom": "a.json",
-  "/user/?name=*": "b.json"
-}
-```
-
-访问 `/user/?name=tom` 会匹配到 `tom.json`, 访问 `/user/?name=jerry` 会匹配到 `b.json`
-
-### 4. 支持访问静态资源
+### 2. 支持访问静态资源
 
 因为配置项目代理的时候可能会影响到静态资源的访问，所以在mock server中加入静态资源访问，只需要提供静态资源的路径即可
 
@@ -263,7 +234,7 @@ exports.staticFile = '../static'
 }
 ```
 
-### 5. 支持自定义Response Headers
+### 3. 支持自定义Response Headers
 
 自定义响应头，需要数据文件改成txt，格式如下：
 
@@ -285,7 +256,7 @@ X-Resource-Count: 3 # custom header
 ]
 ```
 
-### 6. 参数支持正则表达式匹配
+### 4. 参数支持正则表达式
 
 ```javascript
 exports.api = {
@@ -294,7 +265,7 @@ exports.api = {
 ```
 将会匹配A开头/结尾的参数值, 注意这里的`\\`，因为是通过`new RegExp({String})`来创建RegExp对象的，所以需要两个`\`使`{String}`里有一个`\`
 
-### 7. 数据文件路径可以不带扩展名
+### 5. 可省略扩展名
 
 会自动匹配*.json或者*.txt
 ```javascript
@@ -305,7 +276,7 @@ exports.api = {
 }
 ```
 
-### 8. 支持RESTful API
+### 6. RESTful API支持任意匹配，跨级任意匹配
 
 ``` javascript
 exports.api = {
@@ -319,7 +290,7 @@ exports.api = {
 // ** 匹配任意长度 /*/*/*/...
 ```
 
-### 9. 支持js 数据文件
+### 7. 数据文件支持 json, js, txt
 
 ``` javascript
 module.exports = {
@@ -327,6 +298,7 @@ module.exports = {
   "age": 18 // age
 }
 ```
+
 ## LICENSE
 
 MIT
