@@ -108,8 +108,8 @@ if (program.watch) {
     mock.rerun()
   };
 
-  utils.watch([file], () => {
-    log.debug('File changed!')
+  utils.watch([file], (file) => {
+    log.debug(`${file} changed!`)
     rerun();
   });
 } else {

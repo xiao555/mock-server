@@ -74,7 +74,7 @@ describe('Test utils', () => {
   describe('Test watch', () => {
     it('测试watch功能', done => {
       let file = join(__dirname, './test-file/log.js'),
-          cb = file => { fs.unwatchFile(file); done() }
+        cb = (file, watcher) => { watcher.close(); done() }
       utils.watch([file], cb)
       fs.writeFileSync(file, 'hello, world', 'utf-8')
     })
