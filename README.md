@@ -3,6 +3,7 @@
 一个轻量化的本地mock服务器
 
 [![](https://travis-ci.org/xiao555/mock-server.svg?branch=master)](https://travis-ci.org/xiao555/mock-server)
+[![Coverage Status](https://coveralls.io/repos/github/xiao555/mock-server/badge.svg?branch=master)](https://coveralls.io/github/xiao555/mock-server?branch=master)
 [![npm](https://img.shields.io/npm/dt/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![npm](https://img.shields.io/npm/v/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg)](http://nodejs.org/download/)
