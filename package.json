@@ -5,7 +5,7 @@
   "main": "entry.js",
   "scripts": {
     "test": "mocha test/index.js",
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- test/index.js"
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "author": "xiao555 <zhangruiwu32@gmail.com>",
   "repository": {
@@ -37,6 +37,7 @@
     "node-watch": "^0.5.8"
   },
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.5",
     "should": "^13.2.1"
