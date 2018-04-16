@@ -302,6 +302,19 @@ module.exports = {
 }
 ```
 
+### 8. 支持扩展请求参数
+
+可以任意扩展参数，只要config定义的参数规则匹配即可命中，注意有优先级
+``` javascript
+exports.api = {
+  'GET /test/query/?name=tom&age=18': 'users/tom.json',
+  'GET /test/query/?name=tom': 'users/example'
+}
+
+// /test/query/?name=tom&age=18&school=xidian => users/tom.json
+// /test/query/?name=tom&school=xidian => users/example
+```
+
 ## LICENSE
 
 MIT

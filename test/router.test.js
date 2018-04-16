@@ -76,6 +76,16 @@ describe('Test router', async () => {
     })
   })
   
+  it('测试配置参数包含于查询参数也可命中，先配置先命中', () => {
+    let ctx = { path: "/test/query/", query: { name: "tom", age: "18", school: "xidian" } }
+    getHandler(ctx)
+    ctx.body.type.should.be.equal('tom-all')
+    
+    ctx = { path: "/test/query/", query: { name: "tom", school: "xidian" } }
+    getHandler(ctx)
+    ctx.body.type.should.be.equal('tom-name')
+  })
+  
   it('测试请求参数带正则的匹配', () => {
     regExpConfig.forEach(({query, path, type}) => {
       let ctx = { path: path, query: query }
