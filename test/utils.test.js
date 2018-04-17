@@ -12,14 +12,14 @@ describe('Test utils', () => {
     })
 
     it('带模糊匹配的应该返回true', () => {
-      let a = { name: 'xiaoming', age: 18, children: ['1', '2'] }
-      let b = { name: '*', age: '*', children: ['*', '2'] }
+      let a = { name: '*', age: '*', children: ['*', '2'] }
+      let b = { name: 'xiaoming', age: 18, children: ['1', '2'] }
       utils.matchObject(a, b).should.be.true()
     })
 
     it('正则匹配的应该返回true', () => {
-      let a = { name: 'Aemmmm^', age: 18, children: ['1', '2'] }
-      let b = { name: '/^A.*\\^$/', age: '/\\d/', children: ['*', '2'] }
+      let a = { name: '/^A.*\\^$/', age: '/\\d/', children: ['*', '2'] }
+      let b = { name: 'Aemmmm^', age: 18, children: ['1', '2'] }
       utils.matchObject(a, b).should.be.true()
     })
     

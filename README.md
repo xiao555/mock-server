@@ -2,14 +2,14 @@
 
 一个轻量化的本地mock服务器
 
-[![](https://travis-ci.org/xiao555/mock-server.svg?branch=master)](https://travis-ci.org/xiao555/mock-server)
+[![travis-ci](https://travis-ci.org/xiao555/mock-server.svg?branch=master)](https://travis-ci.org/xiao555/mock-server)
 [![Coverage Status](https://coveralls.io/repos/github/xiao555/mock-server/badge.svg?branch=master)](https://coveralls.io/github/xiao555/mock-server?branch=master)
 [![npm](https://img.shields.io/npm/dt/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![npm](https://img.shields.io/npm/v/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg)](http://nodejs.org/download/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xiao555/mock-server/blob/master/LICENSE)
 
-![](https://xiao555.netlify.com/mock-server.png)
+![result](https://xiao555.netlify.com/mock-server.png)
 
 ## 3分钟创建你的Mock Server
 
@@ -30,8 +30,10 @@ let app = new Mock({
 
 app.run()
 ```
+
 安装依赖并执行：
-```
+
+``` bash
 npm i cf-mock-server --save-dev
 
 node index.js
@@ -78,7 +80,7 @@ exports.api = {
     - scan-ok.ogg
 ```
 
-### 开启服务:
+### 开启服务
 
 #### 1. 命令行接口(全局安装)
 
@@ -266,12 +268,14 @@ exports.api = {
   'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
 }
 ```
+
 将会匹配A开头/结尾的参数值, 注意这里的`\\`，因为是通过`new RegExp({String})`来创建RegExp对象的，所以需要两个`\`使`{String}`里有一个`\`
 
 ### 5. 可省略扩展名
 
 会自动匹配*.json或者*.txt
-```javascript
+
+``` javascript
 exports.api = {
   // GET all user
   'GET /users/all': 'all_users',
@@ -305,6 +309,7 @@ module.exports = {
 ### 8. 支持扩展请求参数
 
 可以任意扩展参数，只要config定义的参数规则匹配即可命中，注意有优先级
+
 ``` javascript
 exports.api = {
   'GET /test/query/?name=tom&age=18': 'users/tom.json',
