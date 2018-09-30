@@ -1,1 +1,1 @@
-module.exports = require('./lib/mock.js')
+module.exports = require('./lib/server/koa')

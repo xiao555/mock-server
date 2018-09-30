@@ -78,30 +78,37 @@ describe('Test utils', () => {
       utils.watch([file], cb)
       fs.writeFileSync(file, 'hello, world', 'utf-8')
     })
+
+    it('测试watch异常', () => {
+      should.throws(
+        () => utils.watch(['./no-such-file']),
+        /^Error: .\/no-such-file does not exist./
+      )
+    })
   })
 
-  describe('Test completeFiles', () => {
+  describe('Test getFullPathOfFile', () => {
     it('补充完整扩展名', () => {
-      utils.completeFiles(join(__dirname, './test-file/log'))
+      utils.getFullPathOfFile(join(__dirname, './test-file/log'), ['.js', '.json'])
         .should.be.equal(join(join(__dirname + '/test-file/log.js')))
-      utils.completeFiles(join(__dirname, './test-file/a'))
+      utils.getFullPathOfFile(join(__dirname, './test-file/a'), ['.js', '.json'])
         .should.be.equal(join(join(__dirname + '/test-file/a.json')))
     })
     it('目录下有index则补充index', () => {
-      utils.completeFiles(join(__dirname, './test-file'))
+      utils.getFullPathOfFile(join(__dirname, './test-file'), ['.js', '.json'])
         .should.be.equal(join(__dirname + '/test-file/index.js'))
     })
     it('目录名匹配js扩展', () => {
-      utils.completeFiles(join(__dirname, './test-file/**/b.js'))
+      utils.getFullPathOfFile(join(__dirname, './test-file/**/b.js'), ['.js', '.json'])
         .should.be.equal(join(__dirname + '/test-file/files/b.js'))
-      utils.completeFiles(join(__dirname, './test-file/*.txt'))
+      utils.getFullPathOfFile(join(__dirname, './test-file/*.txt'), ['.js', '.txt'])
         .should.be.equal(join(__dirname + '/test-file/crlf.txt'))
-      utils.completeFiles(join(__dirname, './test-file//*.json'))
+      utils.getFullPathOfFile(join(__dirname, './test-file//*.json'), ['.js', '.json'])
         .should.be.equal(join(__dirname + '/test-file/a.json'))
     })
     it('不正确的路径匹配undefind', () => {
       try {
-        utils.completeFiles(join(__dirname, './test-file/log/2333/'))
+        utils.getFullPathOfFile(join(__dirname, './test-file/log/2333/'), ['.js', '.json'])
           .should.throw()
       } catch (error) {
         return
@@ -143,44 +150,51 @@ describe('Test utils', () => {
 
   describe('Test readFile', () => {
     it('读取index.js文件内容', () => {
-      utils.readFile({}, join(__dirname, './test-file/index'))
+      utils.readFile(join(__dirname, './test-file/index'))
         .should.be.eql({ name: 'tom' })
     })
 
     it('读取a.json文件内容', () => {
-      utils.readFile({}, join(__dirname, './test-file/a'))
-        .should.be.eql({ name: 'tom' })
+      utils.readFile(join(__dirname, './test-file/a'))
+        .should.be.eql({
+          header: {},
+          body: { name: 'tom' }
+        })
     })
     
     it('读取header.txt文件内容, 并配置response header', () => {
       let ctx = new Map()
-      utils.readFile(ctx, join(__dirname, './test-file/header'))
-        .should.be.eql({ name: 'tom' })
-      ctx.should.be.eql(new Map([
-        ['Date', 'Wed, 26 Apr 2017 09:32:13 GMT'],
-        ['Content-Length', '1823'],
-        ['Cache-Control', 'max-age=0, must-revalidate'],
-        ['Content-Type', 'application/json'],
-        ['X-Resource-Count', '3']
-      ]))
+      utils.readFile(join(__dirname, './test-file/header'))
+        .should.be.eql({
+          header: {
+            'Date': 'Wed, 26 Apr 2017 09:32:13 GMT',
+            'Content-Length': '1823',
+            'Cache-Control': 'max-age=0, must-revalidate',
+            'Content-Type': 'application/json',
+            'X-Resource-Count': '3',
+          },
+          body: { name: 'tom' }
+        })
     })
     
     it('兼容CRLF格式的.txt文件', () => {
       let ctx = new Map()
-      utils.readFile(ctx, join(__dirname, './test-file/crlf'))
-        .should.be.eql({ name: 'tom' })
-      ctx.should.be.eql(new Map([
-        ['Date', 'Wed, 26 Apr 2017 09:32:13 GMT'],
-        ['Content-Length', '1823'],
-        ['Cache-Control', 'max-age=0, must-revalidate'],
-        ['Content-Type', 'application/json'],
-        ['X-Resource-Count', '3']
-      ]))
+      utils.readFile(join(__dirname, './test-file/crlf'))
+        .should.be.eql({
+          header: {
+            'Date': 'Wed, 26 Apr 2017 09:32:13 GMT',
+            'Content-Length': '1823',
+            'Cache-Control': 'max-age=0, must-revalidate',
+            'Content-Type': 'application/json',
+            'X-Resource-Count': '3',
+          },
+          body: { name: 'tom' }
+        })
     })
 
     it('读取不存在的文件内容', () => {
       try {
-        utils.readFile({}, join(__dirname, './test-file/emmmmm'))
+        utils.readFile(join(__dirname, './test-file/emmmmm'))
           .should.throw()
       } catch (error) {
         return
@@ -188,7 +202,7 @@ describe('Test utils', () => {
     })
 
     it('读取其他扩展名不是[js,json,txt]的文件内容', () => {
-      should(utils.readFile({}, join(__dirname, './test-file/files/a.html'))).be.exactly(null)
+      should(utils.readFile(join(__dirname, './test-file/files/a.html'))).be.exactly('<p>tom</p>')
     })
   })
 

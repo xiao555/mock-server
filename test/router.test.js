@@ -1,14 +1,22 @@
+const express = require('express')
+const expressMockMiddleware = require('../lib/middleware').expressMockMiddleware
 const should = require('should')
-const router = require('../lib/router')
+const supertest = require('supertest')
 const join = require('path').join
-const fs = require('fs')
 
-const allowMethods = ['get', 'put', 'post', 'patch', 'delete', 'del'] // 支持的请求方法
+/**
+ * 初始化服务器
+ * @param {object} options - 配置选项
+ */
+const initServer = (options) => {
+  const app = express()
+  app.use(expressMockMiddleware(options))
+  return app
+}
 
-let methodRule = allowMethods.reduce((obj, method) => {
-  obj[`${method.toUpperCase()} /test/methods/`] = `methods/${method}.json`
-  return obj
-}, {})
+let request
+
+const allowMethods = ['get', 'put', 'post', 'patch', 'delete'] // 支持的请求方法
 
 // 测试用例
 let queryConfig = [
@@ -16,8 +24,8 @@ let queryConfig = [
   { method: "GET", path: "/test/query/", query: { name: "tom" }, file: 'query', type: 'tom-name' },
   { method: "GET", path: "/test/query/", query: {}, file: 'query', type: 'no-query' },
 ], regExpConfig = [
-  { method: "GET", path: "/test/regexp/", query: { name: "/^A.*\\^$/", age: "/^\\d+$/" }, file: 'regexp', type: 'user' },
-  { method: "GET", path: "/test/regexp/", query: { name: "jerry", age: "/^\\d+$/" }, file: 'regexp', type: 'jerry' },
+  { method: "GET", path: "/test/regexp/", query: { name: "/^A.*\\^$/", age: "/^\\d+$/" }, file: 'regexp', type: 'user', example: { name: 'A^', age: 18 } },
+  { method: "GET", path: "/test/regexp/", query: { name: "jerry", age: "/^\\d+$/" }, file: 'regexp', type: 'jerry', example: { name: 'jerry', age: 18 } },
 ], RESTfulConfig = [
   { method: "GET", path: "/test/restful/api/user/tom", query: {}, file: 'restful', type: 'jack', testPath: ["/test/restful/api/user/tom"] },
   { method: "GET", path: "/test/restful/api/user/*", query: {}, file: 'restful', type: 'user', testPath: ["/test/restful/api/user/obama"] },
@@ -37,123 +45,110 @@ function stringifyQuery(query) {
   }).join('&')
 }
 
-let api = Object.assign(methodRule, [...queryConfig, ...regExpConfig, ...RESTfulConfig].reduce((obj, cf) => {
-  obj[`${cf.method} ${cf.path}${stringifyQuery(cf.query)}`] = `${cf.file}/${cf.type}.json`
-  return obj
-}, {}))
-
-let getHandler
-
-describe('Test router', async () => {
-  it('根据配置创建路由, 测试支持的各种方法', done => {
-    let ctx = new Map(),
-        next = () => {},
-        res = router({
-          "dataFile": join(__dirname, './data'),
-          "api": api
-        })(ctx, next)
-
-    res.then(() => {
-      let methodStack = ctx.router.stack
-      methodStack.length.should.be.equal(6)
-      methodStack.forEach(layer => {
-        layer.methods.should.be.oneOf(['HEAD', 'GET'], ['PUT'], ['POST'], ['PATCH'], ['DELETE'])
-        let ctx = { path: '/test/methods/', query: {} },
-            method = layer.methods[1] || layer.methods[0]
-        layer.stack[0](ctx)
-        ctx.body.method.should.be.equal(method.toLowerCase())
-        if (method === 'GET') getHandler = layer.stack[0]
-      })
-      done()
-    }).catch(err => console.error(err))
-  })
-
-  it('测试带请求参数的匹配', () => {
-    queryConfig.forEach(({query, path, type}) => {
-      let ctx = { path: path, query: query }
-      getHandler(ctx)
-      ctx.body.type.should.be.equal(type)
+describe('Test middleware', () => {
+  describe('初始化中间件', () => {
+    it('根据测试的配置初始化中间件, 测试支持的各种方法', () => {
+      request = supertest(initServer({
+        config: join(__dirname, './config.js')
+      }).listen())
+      return Promise.all([
+        ...allowMethods.map(method => request[method]('/test/methods/').expect(200, { method: method })),
+        request.options('/test/methods/').expect(404)
+      ])
     })
-  })
-  
-  it('测试配置参数包含于查询参数也可命中，先配置先命中', () => {
-    let ctx = { path: "/test/query/", query: { name: "tom", age: "18", school: "xidian" } }
-    getHandler(ctx)
-    ctx.body.type.should.be.equal('tom-all')
-    
-    ctx = { path: "/test/query/", query: { name: "tom", school: "xidian" } }
-    getHandler(ctx)
-    ctx.body.type.should.be.equal('tom-name')
-  })
-  
-  it('测试请求参数带正则的匹配', () => {
-    regExpConfig.forEach(({query, path, type}) => {
-      let ctx = { path: path, query: query }
-      getHandler(ctx)
-      ctx.body.type.should.be.equal(type)
-    })
-  })
-  
-  it('测试RESTful的匹配', () => {
-    RESTfulConfig.forEach(({ query, type, testPath}) => {
-      testPath.forEach(_path => {
-        let ctx = { path: _path, query: query }
-        getHandler(ctx)
-        ctx.body.type.should.be.equal(type)
-      })
-    })
-  })
 
-  it('根据配置创建路由, 测试直接配置json字符串', done => {
-    try {
-      let ctx = new Map(),
-          next = () => { },
-          res = router({
-            "api": { 
+    it('API配置中含有不支持的方法, 抛出not supported method错误', () => {
+      should.throws(
+        () => initServer({ config: { api: { 'OPTIONS /a': 'test' } } }),
+        /^Error: not supported method/
+      )
+    })
+
+    it('配置文件不存在, 抛出not supported method错误', () => {
+      should.throws(
+        () => initServer({
+          config: join(__dirname, './404.js')
+        }),
+        /^Error: cannot resolve path \(or pattern\):/
+      )
+    })
+
+    it('根据配置创建路由, 测试直接配置json字符串', () => {
+      let _request
+      let testData = [
+        { path: '/test/json/', type: 'json' },
+        { path: '/test/json/?name=tom', type: 'tom' } 
+      ]
+      should.doesNotThrow(
+        () => _request = supertest(initServer({
+          config: {
+            "api": {
               "GET /test/json/": '{"type":"json"}',
-              "GET /test/json/?name=tom": '{"type":"json"}' 
+              "GET /test/json/?name=tom": '{"type":"tom"}'
             }
-          })(ctx, next)
-      res.then(() => {
-        [
-          { path: '/test/json/', query: {} }, 
-          { path: '/test/json/', query: { name: 'tom' }}
-        ].forEach(_ctx => {
-          ctx.router.stack[0].stack[0](_ctx)
-          _ctx.body.type.should.be.equal('json')
-        })
-        done()
-      }).catch(err => console.error(err))
-    } catch (error) {
-      return
-    }
+          }
+        }))
+      )
+      return Promise.all([
+        ...testData.map(({path, type}) => _request.get(path).expect(200, { type: type }))
+      ])
+    })
+
+    it('根据配置创建路由, 测试不支持的方法', () => {
+      should.throws(
+        () => initServer({
+          config: {
+            "api": { "GGGET /test/unsupport-method/": "methods/get.json" }
+          }
+        }),
+        /^Error: not supported method/
+      )
+    })
   })
 
-  it('根据配置创建路由, 测试不支持的方法', () => {
-    try {
-      router({
-        "dataFile": join(__dirname, './data'),
-        "api": { "GGGET /test/unsupport-method/": "methods/get.json" }
-      }).should.throw()
-    } catch (error) {
-      return
-    }
-  })
+  describe('请求规则匹配', () => {
+    it('测试带请求参数的匹配', () => {
+      const testData = [ // 404 data
+        '/test/query/?name=jerry&age=18',
+        '/test/query/?name=jerry',
+        '/test/querytest/?name=tom&age=18',
+      ]
+      return Promise.all([
+        ...queryConfig.map(({ query, path, type }) => request.get(`${path}${stringifyQuery(query)}`).expect({ type: type })),
+        ...testData.map(url => request.get(url).expect(404))
+      ])
+    })
 
-  it('测试不支持的path, query', () => {
-    try {
-      let ctx = { path: '/2333/', query: {} }
-      getHandler(ctx).should.throw()
-    } catch (error) {}
+    it('测试配置参数包含于查询参数也可命中，优先匹配次序靠前的', () => {
+      const testData = [
+        { url: '/test/query/?name=tom&age=18&school=xidian', type: 'tom-all', code: 200 },
+        { url: '/test/query/?name=tom&school=xidian', type: 'tom-name', code: 200 },
+        { url: '/test/query/?name=jerry&school=xidian', code: 404 },
+      ]
+      return Promise.all(testData.map(({ url, type, code }) => request.get(url).then(res => {
+        res.statusCode.should.be.equal(code)
+        code == 200 && res.body.type.should.be.equal(type)
+      }))
+      )
+    })
 
-    try {
-      let ctx = { path: '/test/query/', query: {school: 'xidian'} }
-      getHandler(ctx).should.throw()
-    } catch (error) {}
-    
-    try {
-      let ctx = { path: '/test/regexp/', query: {} }
-      getHandler(ctx).should.throw()
-    } catch (error) {}
+    it('测试请求参数带正则的匹配', () => {
+      return Promise.all([
+        ...regExpConfig.map(({ path, type, example }) => request.get(`${path}${stringifyQuery(example)}`).expect(200, { type: type })),
+        request.get(`/test/regexp/?name=123&age=18`).expect(404)
+      ])
+    })
+
+    it('测试RESTful的匹配', () => {
+      const testData = [
+        { url: '/test/restful/user/tom', code: 404 },
+      ]
+      return Promise.all([
+        ...RESTfulConfig.map(({ type, testPath }) => {
+          return Promise.all(testPath.map( _path => request.get(_path).expect(200, { type: type })))
+        }),
+        ...testData.map(({ url, code }) => request.get(url).expect(code))
+      ])
+    })
   })
 })

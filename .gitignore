@@ -8,6 +8,7 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 log/
+.nyc_output
 **/*.log
 
 # Editor directories and files

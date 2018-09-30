@@ -1,122 +1,42 @@
 #!/usr/bin/env node
 'use strict';
 
-/* eslint no-unused-vars: off */
-
-/**
- * Module dependencies.
- */
-
-const program = require('commander');
-const path = require('path');
-const fs = require('fs');
-const resolve = path.resolve;
-const exists = fs.existsSync;
-const Mock = require('../');
-const utils = Mock.utils;
-const join = path.join;
-const cwd = process.cwd();
-const log = require('../lib/utils/log')
-const mock = new Mock();
-
-/**
- * Files.
- */
-
-let file = '';
-
-/**
- * Globals.
- */
-
-let globals = [];
-
-// options
+const program = require('commander')
+const path = require('path')
+const fs = require('fs')
+const resolve = path.resolve
+const Mock = require('../')
+const mock = new Mock()
 
 program
   .version(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')).version)
   .usage('[options] <file ...>')
   .option('-p, --port <port>', 'Define the mock server started port, default is 8008')
-  .option('-w, --watch', 'Listen to the file changes and restart the service')
   .option('-c, --config <file>', 'Custom profiles, default is mock/config.js')
 
-
-program._name = 'mock';
-
-// parse args
-
-program.parse(process.argv);
-
-// infinite stack traces
-
+program._name = 'mock'
+program.parse(process.argv)
 Error.stackTraceLimit = Infinity; // TODO: config
 
-const extensions = ['js', 'json'];
-
-// default files to mock/config.js
-
+// default files to 
+let file = 'mock/config.js'
 if (!!program.config) {
   file = program.config
-} else {
-  file = 'mock/config.js'
 }
 
-// resolve
+file = resolve(file)
 
-file = resolve(file);
-
-if (file == '') {
-  throw new Error('No mock files found');
-  process.exit(1);
+if (file === '') {
+  throw new Error('No mock files found')
 }
+mock.setConfig(file)
 
 // custom port
 if (program.port) {
   mock.setPort(program.port)
 }
 
-// --watch
-
-let loadAndRun;
-let purge;
-let rerun;
-
-if (program.watch) {
-  log.debug('>> Watch mode');
-  process.on('SIGINT', () => {
-    log.debug('\n>> Exit.\n');
-    process.exit(130);
-  });
-
-  loadAndRun = () => {
-    try {
-      mock.file = file;
-      mock.run()
-    } catch (e) {
-      log.error(e.stack);
-    }
-  };
-  // delete 旧的引用
-  purge = () => {
-    delete require.cache[file];
-  };
-
-  loadAndRun();
-
-  rerun = () => {
-    purge();
-    mock.rerun()
-  };
-
-  utils.watch([file], (file) => {
-    log.debug(`${file} changed!`)
-    rerun();
-  });
-} else {
-  // load
-  mock.file = file;
-  mock.run();
-}
+mock.run();
 
 process.on('SIGINT', () => {
   process.exit(130)

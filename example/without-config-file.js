@@ -1,4 +1,4 @@
-let Mock = require('../../')
+let Mock = require('..')
 
 let app = new Mock({
   config: {

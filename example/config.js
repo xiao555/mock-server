@@ -1,6 +1,6 @@
 // config.js
 // mock data storage directory
-exports.dataFile = '../data'
+exports.dataFile = './data'
 // exports.staticFile = '../static'
 /**
  * KEY: '{METHOD} {router}'
@@ -8,8 +8,8 @@ exports.dataFile = '../data'
  */
 exports.api = {
   // GET all user
-  'GET /users/all': 'all_users',
-  'GET /users/all?name=sam': 'users/example',
+  'GET /api/users/all': 'all_users',
+  'GET /api/users/all?name=sam': 'users/example',
   // GET user named 'tom'
   'GET /api/users/?name=tom': 'users/tom.json',
   'GET /api/v1/users/tom': 'users/tom.json',
@@ -17,5 +17,5 @@ exports.api = {
   'GET /api/v1/*/tom': 'users/tom.json',
   'GET /api/**/tom': 'users/tom.json',
   // GET user whatever the name is
-  'GET /api/users/?name=/^A.*\\^$/': 'users/example.json',
+  'GET /api/users/?name=/^A.*\\^$/': 'users/example',
 }

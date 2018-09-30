@@ -1,0 +1,7 @@
+Cache-Control: max-age=0, must-revalidate
+Content-Type: application/json
+
+{
+  "name": "jerry",
+  "age": 18
+}
