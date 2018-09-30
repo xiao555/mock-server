@@ -1,8 +1,8 @@
 {
   "name": "cf-mock-server",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.1",
   "description": "A mock server for REST API by koa",
-  "main": "entry.js",
+  "main": "index.js",
   "scripts": {
     "test": "nyc mocha test/index.js --exit",
     "coverage": "nyc report --reporter=html mocha test/index.js --exit",

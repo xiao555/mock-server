@@ -124,7 +124,7 @@ mock.setConfig({ api: { 'GET /api/users/all': '[{"name":"tom"},{"name":"jerry"}]
 
 ##### mock.run()
 
-启动服务, 并返回实例
+启动服务, 并返回koa实例
 
 ``` javascript
 mock.run() 
@@ -182,4 +182,4 @@ dev: {
 
 ## LICENSE
 
-MIT
+[MIT](https://opensource.org/licenses/MIT)
