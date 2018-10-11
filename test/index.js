@@ -1,3 +1,4 @@
 process.env.NODE_ENV = 'test'
-require('./router.test')
+require('./expressMiddleware.test')
+require('./koaMiddleware.test')
 require('./utils.test')
