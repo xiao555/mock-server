@@ -1,5 +1,6 @@
 const express = require('express')
 const expressMockMiddleware = require('../lib/middleware').expressMockMiddleware
+const initMiddleware = require('../lib/middleware').initMiddleware
 const should = require('should')
 const supertest = require('supertest')
 const join = require('path').join
@@ -45,7 +46,7 @@ function stringifyQuery(query) {
   }).join('&')
 }
 
-describe('Test middleware', () => {
+describe('Test express middleware', () => {
   describe('初始化中间件', () => {
     it('根据测试的配置初始化中间件, 测试支持的各种方法', () => {
       request = supertest(initServer({
@@ -59,17 +60,17 @@ describe('Test middleware', () => {
 
     it('API配置中含有不支持的方法, 抛出not supported method错误', () => {
       should.throws(
-        () => initServer({ config: { api: { 'OPTIONS /a': 'test' } } }),
-        /^Error: not supported method/
+        () => initMiddleware({ config: { api: { 'OPTIONS /a': 'test' } } }),
+        /^MockServerError: not supported method/
       )
     })
 
     it('配置文件不存在, 抛出not supported method错误', () => {
       should.throws(
-        () => initServer({
+        () => initMiddleware({
           config: join(__dirname, './404.js')
         }),
-        /^Error: cannot resolve path \(or pattern\):/
+        /^MockServerError: cannot resolve path \(or pattern\):/
       )
     })
 
@@ -96,12 +97,12 @@ describe('Test middleware', () => {
 
     it('根据配置创建路由, 测试不支持的方法', () => {
       should.throws(
-        () => initServer({
+        () => initMiddleware({
           config: {
             "api": { "GGGET /test/unsupport-method/": "methods/get.json" }
           }
         }),
-        /^Error: not supported method/
+        /^MockServerError: not supported method/
       )
     })
   })
