@@ -79,12 +79,12 @@ describe('Test utils', () => {
       fs.writeFileSync(file, 'hello, world', 'utf-8')
     })
 
-    it('测试watch异常', () => {
+    it('测试watch异常', () => 
       should.throws(
         () => utils.watch(['./no-such-file']),
         /^Error: .\/no-such-file does not exist./
       )
-    })
+    )
   })
 
   describe('Test getFullPathOfFile', () => {
