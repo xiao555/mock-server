@@ -58,21 +58,21 @@ describe('Test express middleware', () => {
       ])
     })
 
-    it('API配置中含有不支持的方法, 抛出not supported method错误', () => {
+    it('API配置中含有不支持的方法, 抛出not supported method错误', () => 
       should.throws(
         () => initMiddleware({ config: { api: { 'OPTIONS /a': 'test' } } }),
         /^MockServerError: not supported method/
       )
-    })
+    )
 
-    it('配置文件不存在, 抛出not supported method错误', () => {
+    it('配置文件不存在, 抛出not supported method错误', () => 
       should.throws(
         () => initMiddleware({
           config: join(__dirname, './404.js')
         }),
         /^MockServerError: cannot resolve path \(or pattern\):/
       )
-    })
+    )
 
     it('根据配置创建路由, 测试直接配置json字符串', () => {
       let _request
@@ -95,7 +95,7 @@ describe('Test express middleware', () => {
       ])
     })
 
-    it('根据配置创建路由, 测试不支持的方法', () => {
+    it('根据配置创建路由, 测试不支持的方法', () => 
       should.throws(
         () => initMiddleware({
           config: {
@@ -104,7 +104,7 @@ describe('Test express middleware', () => {
         }),
         /^MockServerError: not supported method/
       )
-    })
+    )
   })
 
   describe('请求规则匹配', () => {
@@ -133,12 +133,12 @@ describe('Test express middleware', () => {
       )
     })
 
-    it('测试请求参数带正则的匹配', () => {
-      return Promise.all([
+    it('测试请求参数带正则的匹配', () => 
+      Promise.all([
         ...regExpConfig.map(({ path, type, example }) => request.get(`${path}${stringifyQuery(example)}`).expect(200, { type: type })),
         request.get(`/test/regexp/?name=123&age=18`).expect(404)
       ])
-    })
+    )
 
     it('测试RESTful的匹配', () => {
       const testData = [
@@ -151,5 +151,37 @@ describe('Test express middleware', () => {
         ...testData.map(({ url, code }) => request.get(url).expect(code))
       ])
     })
+  })
+
+  describe('与其他中间件共存', () => {
+    const _app = express()
+
+    _app.use((req, res, next) => {
+      if (req.path === '/customMiddleware/before') {
+        res.status(200).send('customMiddleware/before')
+      }
+      next()
+    })
+
+    _app.use(expressMockMiddleware({
+      config: join(__dirname, './config.js')
+    }))
+
+    _app.use((req, res, next) => {
+      if (req.path === '/customMiddleware/after') {
+        res.status(200).send('customMiddleware/after')
+      }
+      next()
+    })
+
+    const _request = supertest(_app.listen())
+
+    it('测试之前的中间件已经发送了一个响应头', () => _request.get('/customMiddleware/before').expect(200, 'customMiddleware/before'))
+
+    it('测试之后的中间件已经发送了一个响应头', () => _request.get('/customMiddleware/after').expect(200, 'customMiddleware/after'))
+
+    it('测试其他的中间件未发送响应头', () => _request.get('/test/methods/').expect(200, { method: 'get' }))
+
+    it('测试不支持的方法', () => _request.options('/test/methods/').expect(404))
   })
 })

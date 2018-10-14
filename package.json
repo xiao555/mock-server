@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc mocha test/index.js --exit",
     "coverage": "nyc report --reporter=html mocha test/index.js --exit",
-    "showcov": "yarn run coverage && node scripts/coverage"
+    "cov": "yarn run coverage && node scripts/coverage"
   },
   "author": "xiao555 <zhangruiwu32@gmail.com>",
   "repository": {
