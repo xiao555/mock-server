@@ -127,7 +127,7 @@ mock.setConfig({ api: { 'GET /api/users/all': '[{"name":"tom"},{"name":"jerry"}]
 启动服务, 并返回koa实例
 
 ``` javascript
-mock.run() 
+mock.run()
 ```
 
 ## API Config
@@ -162,9 +162,27 @@ exports.api = {
 ### Vue CLI 3
 
 ``` javascript
+// mockserver是单独的node服务采用proxy方式
 module.exports = {
   devServer: {
     proxy: 'http://localhost:8008', // will proxy all request
+  }
+}
+
+// 也可以以中间件形式挂载到webpack-dev-server上
+const mock = require('cf-mock-server/express-mw')
+const path = require('path')
+
+const options = {
+  config: path.join(__dirname, './mock')
+}
+
+module.exports = {
+  devServer: {
+    clientLogLevel: 'info',
+    after: (app) => {
+      app.use(mock(options))
+    }
   }
 }
 ```
