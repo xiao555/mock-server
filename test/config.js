@@ -1,3 +1,6 @@
+const readFileSync = require('fs').readFileSync
+const path = require('path')
+
 const allowMethods = ['get', 'put', 'post', 'patch', 'delete'] // 支持的请求方法
 
 let methodRule = allowMethods.reduce((obj, method) => {
@@ -36,6 +39,24 @@ let api = Object.assign(methodRule, [...queryConfig, ...regExpConfig, ...RESTful
   obj[`${cf.method} ${cf.path}${stringifyQuery(cf.query)}`] = `${cf.file}/${cf.type}.json`
   return obj
 }, {}))
+// 自定义函数
+api['POST /customFunction'] = (req, res) => {
+  if (req.body.hello === 'world') {
+    res.status(200).send(JSON.parse(readFileSync(
+      path.join(__dirname, '/data/restful/user.json'),
+      'utf-8'
+    )))
+  }
+  res.status(404).end()
+}
+// 403
+api['GET /403'] = (req, res) => {
+  res.status(403).end()
+}
+// 404
+api['GET /404'] = (req, res) => {
+  res.status(404).end()
+}
 // mock data storage directory
 exports.dataFile = './data'
 /**
