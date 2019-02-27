@@ -1,6 +1,6 @@
 {
   "name": "cf-mock-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A mock server for REST API by koa",
   "main": "index.js",
   "scripts": {
