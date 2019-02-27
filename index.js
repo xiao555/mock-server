@@ -1,1 +1,1 @@
-module.exports = require('./lib/server/koa')
+module.exports = require('./lib/server')
