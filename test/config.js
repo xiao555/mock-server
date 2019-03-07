@@ -20,7 +20,6 @@ let queryConfig = [
   { method: "GET", path: "/test/restful/api/user/tom", query: {}, file: 'restful', type: 'jack', testPath: ["/test/restful/api/user/tom"] },
   { method: "GET", path: "/test/restful/api/user/*", query: {}, file: 'restful', type: 'user', testPath: ["/test/restful/api/user/obama"] },
   { method: "GET", path: "/test/restful/api/**/tom", query: {}, file: 'restful', type: 'rose', testPath: ["/test/restful/api/car/belong/tom", "/test/restful/api/tom"] },
-  // { method: "GET", path: "/test/restful/api/user/", query: {}, file: 'restful', type: 'users', testPath: ["/test/restful/api/user/"] },
 ]
 
 /**

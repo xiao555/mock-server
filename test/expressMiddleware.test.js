@@ -31,7 +31,6 @@ let queryConfig = [
   { method: "GET", path: "/test/restful/api/user/tom", query: {}, file: 'restful', type: 'jack', testPath: ["/test/restful/api/user/tom"] },
   { method: "GET", path: "/test/restful/api/user/*", query: {}, file: 'restful', type: 'user', testPath: ["/test/restful/api/user/obama"] },
   { method: "GET", path: "/test/restful/api/**/tom", query: {}, file: 'restful', type: 'rose', testPath: ["/test/restful/api/car/belong/tom", "/test/restful/api/tom"] },
-  { method: "GET", path: "/test/restful/api/user/", query: {}, file: 'restful', type: 'users', testPath: ["/test/restful/api/user/"] },
 ]
 
 /**
@@ -143,6 +142,7 @@ describe('Test express middleware', () => {
     it('测试RESTful的匹配', () => {
       const testData = [
         { url: '/test/restful/user/tom', code: 404 },
+        { url: '/test/restful/api/user/', code: 404 },
       ]
       return Promise.all([
         ...RESTfulConfig.map(({ type, testPath }) => {
