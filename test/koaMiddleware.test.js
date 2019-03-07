@@ -20,7 +20,11 @@ app.use(koaMockMiddleware({
 app.use(koaMockMiddleware({
   config: {
     api: {
-      'GET /test/methods/': '{"method": "get"}',
+      'GET /test/methods/': (ctx) => {
+        ctx.body = {
+          "method": "get"
+        }
+      },
     }
   }
 }))

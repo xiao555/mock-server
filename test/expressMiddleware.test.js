@@ -184,4 +184,34 @@ describe('Test express middleware', () => {
 
     it('测试不支持的方法', () => _request.options('/test/methods/').expect(404))
   })
+
+  describe('测试自定义函数', () => {
+    const _app = express()
+
+    _app.use(expressMockMiddleware({
+      config: {
+        api: {
+          'POST /custom': (req, res, next) => {
+            if (req.body.query === 'user') {
+              return res.status(200).send({ name: 'xiaoming' })
+            } else if (req.body.query === 'car') {
+              return res.status(200).send({ name: 'bmw' })
+            } else {
+              next()
+            }
+          }
+        }
+      }
+    }))
+
+    _app.use((req, res, next) => {
+      res.status(404).end()
+    })
+
+    const _request = supertest(_app.listen())
+
+    it('post请求1', () => _request.post('/custom').send({ query: 'user' }).expect(200, { name: 'xiaoming' }))
+    it('post请求2', () => _request.post('/custom').send({ query: 'car' }).expect(200, { name: 'bmw' }))
+    it('post请求3', () => _request.post('/custom').send({ query: 'other' }).expect(404))
+  })
 })
