@@ -20,7 +20,7 @@ let queryConfig = [
   { method: "GET", path: "/test/restful/api/user/tom", query: {}, file: 'restful', type: 'jack', testPath: ["/test/restful/api/user/tom"] },
   { method: "GET", path: "/test/restful/api/user/*", query: {}, file: 'restful', type: 'user', testPath: ["/test/restful/api/user/obama"] },
   { method: "GET", path: "/test/restful/api/**/tom", query: {}, file: 'restful', type: 'rose', testPath: ["/test/restful/api/car/belong/tom", "/test/restful/api/tom"] },
-  { method: "GET", path: "/test/restful/api/user/", query: {}, file: 'restful', type: 'users', testPath: ["/test/restful/api/user/"] },
+  // { method: "GET", path: "/test/restful/api/user/", query: {}, file: 'restful', type: 'users', testPath: ["/test/restful/api/user/"] },
 ]
 
 /**
@@ -40,14 +40,24 @@ let api = Object.assign(methodRule, [...queryConfig, ...regExpConfig, ...RESTful
   return obj
 }, {}))
 // 自定义函数
-api['POST /customFunction'] = (req, res) => {
-  if (req.body.hello === 'world') {
-    res.status(200).send(JSON.parse(readFileSync(
-      path.join(__dirname, '/data/restful/user.json'),
-      'utf-8'
-    )))
+api['POST /customFunction'] = (req, res, next) => {
+  let answer
+  switch(req.body.query) {
+    case 'name':
+      answer = '小明';
+      break;
+    case 'age':
+      answer = 18;
+      break
+    default:
+      answer = {
+        name: '小明',
+        age: 18
+      }
   }
-  res.status(404).end()
+  res.status(200).send({
+    answer
+  })
 }
 // 403
 api['GET /403'] = (req, res) => {

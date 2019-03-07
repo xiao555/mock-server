@@ -13,12 +13,13 @@
 
 * 支持中间件方式挂载服务，可用于Express和Koa搭建的Node服务
 * 支持命令行方式启动服务
-* 支持Node启动Koa服务作为Mock Server
-* 修改配置文件热重载路由
+* 支持Node启动Express服务作为Mock Server
+* 修改配置文件热更新
 * 支持自定义Response Header
 * 支持请求参数配置使用正则表达式
 * 支持请求参数不完全匹配
 * 支持通配符路径RESTful风格的API
+* 支持自定义函数处理返回结果
 
 ## Install
 

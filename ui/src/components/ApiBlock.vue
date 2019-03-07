@@ -7,10 +7,20 @@
     .content(ref='content' :class='[ showContent ? "show" : "" ]')
       .container(ref='container')
         .expect-data
-          p ExpectData:
-          div(v-highlight)
-            pre
-              code {{ JSON.stringify(api.expectData) }}
+          template(v-if='api.isCustomFunc')
+            div(v-highlight)
+              pre
+                code {{ api.expectData }}
+          template(v-else)
+            div ExpectData:
+            div(v-highlight)
+              pre
+                code {{ JSON.stringify(api.expectData) }}
+        .path(v-if='pathArr.length')
+          template(v-for='item in pathArr')
+            input(v-if='item.text.includes("*")' type='text' v-model='item.value')
+            span(v-else) {{ item.value }}
+            | /
         .params(v-if='paramsList.length')
           p Params:
           p(v-for='param in paramsList' :key='param.label')
@@ -37,6 +47,7 @@ export default {
   data () {
     return {
       showContent: false,
+      pathArr: [],
       paramsList: [],
       responseData: '',
       reqData: '',
@@ -53,7 +64,7 @@ export default {
     },
     tryIt () {
       this.responseData = ''
-      let path = this.api.url.split('?')[0]
+      let path = this.pathArr.length ? this.pathArr.map(_ => _.value).join('/') : this.api.url.split('?')[0]
       let param = this.paramsList.reduce((res, cur) => {
         res.push(`${cur.label}=${cur.value}`)
         return res
@@ -64,7 +75,7 @@ export default {
             this.responseData = res.data
             this.$nextTick(() => this.updateContentHeight())
           }).catch(error => {
-            this.responseData = error.response
+            this.responseData = `${error.response.status} ${error.response.statusText}`
             this.$nextTick(() => this.updateContentHeight())
           })
       } else {
@@ -73,18 +84,23 @@ export default {
             this.responseData = res.data
             this.$nextTick(() => this.updateContentHeight())
           }).catch(error => {
-            this.responseData = error.response
+            this.responseData = `${error.response.status} ${error.response.statusText}`
             this.$nextTick(() => this.updateContentHeight())
           })
       }
     },
     updateContentHeight (height) {
       this.$refs.content.style.height = height || this.$refs.container.scrollHeight + 'px'
-      console.log(this.$refs.content.style.height);
     }
   },
   created() {
-    let query = this.api.url.split('?')[1] || ''
+    let [path, query] = this.api.url.split('?')
+    if (path.includes("*")) {
+      this.pathArr = path.split('/').filter(_ => _ !== '').map(item => ({
+        text: item,
+        value: item,
+      }))
+    }
     if (query) {
       query.split('&').forEach(_ => {
         let [label, value] = _.split('=')
@@ -116,9 +132,11 @@ export default {
       background-color: #f9fafc;
     }
     .http-method {
+      display: inline-block;
       margin-right: 10px;
       border-radius: 4px;
-      padding: 0 10px;
+      width: 80px;
+      text-align: center;
       &.get {
         background-color: rgba(64, 158, 255, 0.1);
         border: 1px solid rgba(64, 158, 255, 0.2);
@@ -160,10 +178,7 @@ export default {
     padding-left: 10px;
     padding-right: 10px;
     .expect-data {
-      display: flex;
-      flex: 1;
-      justify-content: flex-start;
-      align-self: auto;
+      overflow: hidden;
     }
     .params {
       label {
