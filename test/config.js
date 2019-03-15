@@ -66,6 +66,12 @@ api['GET /403'] = (req, res) => {
 api['GET /404'] = (req, res) => {
   res.status(404).end()
 }
+// timeout
+api['GET /你是谁'] = (req, res) => {
+  setTimeout(() => {
+    res.status(200).send('我是万金油')
+  }, 5000)
+}
 // mock data storage directory
 exports.dataFile = './data'
 /**
