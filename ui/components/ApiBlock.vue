@@ -115,7 +115,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .api-block {
   width: 80%;
   max-width: 800px;
