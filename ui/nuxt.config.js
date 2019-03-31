@@ -29,7 +29,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/element-ui'],
+  plugins: ['@/plugins/element-ui', '@/plugins/highlight'],
 
   /*
    ** Nuxt.js modules
@@ -37,13 +37,23 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/apollo'
   ],
   /*
    ** Axios module configuration
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
+  },
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: `${process.env.BASE_URL ||
+          'http://localhost:3000'}/graphql`
+      }
+    }
   },
 
   /*

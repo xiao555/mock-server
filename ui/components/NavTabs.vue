@@ -7,7 +7,10 @@
 <script>
 export default {
   props: {
-    options: Array,
+    options: {
+      type: Array,
+      default: () => []
+    }
   }
 }
 </script>
@@ -24,4 +27,3 @@ export default {
     padding 0 18px
     line-height 16px
 </style>
-

@@ -1,0 +1,8 @@
+mutation getMockConfig($path: String!) {
+  getMockConfig(path: $path) {
+    method
+    url
+    expectData
+    isCustomFunc
+  }
+}

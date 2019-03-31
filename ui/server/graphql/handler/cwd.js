@@ -14,12 +14,9 @@ function normalize(value) {
 
 module.exports = {
   get: () => cwd,
-  set: path => {
-    path = normalize(path)
-    if (!fs.existsSync(path)) return
-    cwd = path
-    try {
-      process.chdir(path)
-    } catch (err) {}
+  set: file => {
+    file = normalize(file)
+    if (!fs.existsSync(file)) return
+    cwd = file
   }
 }

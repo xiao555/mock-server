@@ -1,0 +1,13 @@
+mutation folderOpen ($path: String!) {
+  folderOpen(path: $path) {
+    name
+    path
+    children {
+      name
+      path
+      hidden
+      isDirectory
+      isMockConfig
+    }
+  }
+}

@@ -1,0 +1,13 @@
+mutation folderOpenParent {
+  folderOpenParent {
+    name
+    path
+    children {
+      name
+      path
+      hidden
+      isDirectory
+      isMockConfig
+    }
+  }
+}

@@ -19,6 +19,10 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'nuxt/no-cjs-in-config': 'off'
+    'nuxt/no-cjs-in-config': 'off',
+    'no-console': 'off'
+  },
+  globals: {
+    "axios": true
   }
 }

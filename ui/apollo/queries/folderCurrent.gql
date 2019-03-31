@@ -1,0 +1,13 @@
+{
+  folderCurrent {
+    name
+    path
+    children {
+      name
+      path
+      hidden
+      isDirectory
+      isMockConfig
+    }
+  }
+}

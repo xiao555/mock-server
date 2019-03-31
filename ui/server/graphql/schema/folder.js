@@ -1,47 +1,45 @@
 const { gql } = require('apollo-server-express')
 const cwd = require('../handler/cwd')
 const folder = require('../handler/folder')
-const file = require('../handler/file')
 
 exports.types = gql`
-  type File {
-    name: String!
-    path: String!
-    content: String
-    isMockConfig: Boolean!
+  type MockItem {
+    method: String
+    url: String
+    expectData: String
+    isCustomFunc: Boolean
   }
 
   type Folder {
     name: String!
     path: String!
     children: [Folder]
+    hidden: Boolean
+    isDirectory: Boolean
+    isMockConfig: Boolean
   }
 
   type Query {
     folderCurrent: Folder
-    folderExists(file: String!): Boolean
   }
 
   type Mutation {
     folderOpen(path: String!): Folder
     folderOpenParent: Folder
+    getMockConfig(path: String!): [MockItem]
   }
 `
 
 exports.resolves = {
-  File: {
-    content: path => file.getFileContent(path),
-    isMockConfig: path => file.isMockConfig(path)
-  },
   Folder: {
-    children: folder => folder.listChildren(folder.path)
+    children: _folder => folder.listChildren(_folder.path)
   },
   Query: {
-    folderCurrent: () => folder.getCurrent(),
-    folderExists: path => folder.isDirectory(path)
+    folderCurrent: () => folder.getCurrent()
   },
   Mutation: {
-    folderOpen: path => folder.open(path),
-    folderOpenParent: () => folder.openParent(cwd.get())
+    folderOpen: (root, { path }) => folder.open(path),
+    folderOpenParent: () => folder.openParent(cwd.get()),
+    getMockConfig: (root, { path }) => folder.getMockConfig(path)
   }
 }
