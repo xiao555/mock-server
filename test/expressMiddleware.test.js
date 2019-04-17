@@ -151,6 +151,14 @@ describe('Test express middleware', () => {
         ...testData.map(({ url, code }) => request.get(url).expect(code))
       ])
     })
+
+    it('测试同名参数', () => {
+      const testData = [
+        { url: '/same-name-parameter?parameter=123&parameter=456', result: '789' },
+        { url: '/same-name-parameter?parameter=abc&parameter=def', result: 'ghi' },
+      ]
+      return Promise.all(testData.map(({ url, result }) => request.get(url).expect(200, { result }) ))
+    })
   })
 
   describe('与其他中间件共存', () => {

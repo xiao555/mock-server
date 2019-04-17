@@ -72,6 +72,17 @@ api['GET /你是谁'] = (req, res) => {
     res.status(200).send('我是万金油')
   }, 5000)
 }
+// 同名参数
+api['GET /same-name-parameter?parameter=123&parameter=456'] = (req, res) => {
+  res.status(200).send({
+    result: '789'
+  })
+}
+api['GET /same-name-parameter?parameter=abc&parameter=def'] = (req, res) => {
+  res.status(200).send({
+    result: 'ghi'
+  })
+}
 // mock data storage directory
 exports.dataFile = './data'
 /**
