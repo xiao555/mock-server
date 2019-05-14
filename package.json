@@ -1,11 +1,11 @@
 {
   "name": "cf-mock-server",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A flexible and fast mock server",
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha test/index.js --exit",
-    "ui": "cd ui && npm run serve",
+    "ui": "cd ui && npm run dev",
     "coverage": "nyc report --reporter=html mocha test/index.js --exit",
     "cov": "yarn run coverage && node scripts/coverage"
   },
