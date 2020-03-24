@@ -14,7 +14,7 @@
 * 支持中间件方式挂载服务，可用于Express和Koa搭建的Node服务
 * 支持命令行方式启动服务
 * 支持Node启动Express服务作为Mock Server
-* 修改配置文件热更新
+* 支持监听配置文件和数据文件，修改热更新
 * 支持请求参数配置使用正则表达式
 * 支持RESTful风格的API, 路径可通过通配符匹配
 * 支持自定义函数处理返回结果, 可自定义Response Header, 模拟延迟等
@@ -67,7 +67,8 @@ const mock = require('cf-mock-server/express-mw')
 const path = require('path')
 
 const options = {
-  config: path.join(__dirname, './mock')
+  config: path.join(__dirname, './mock'),
+  watchs: [path.join(__dirname, './mock')] // 监听mock目录下的所有js文件，热更新
 }
 
 module.exports = {
