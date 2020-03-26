@@ -1,6 +1,6 @@
 {
   "name": "cf-mock-server",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A flexible and fast mock server",
   "main": "index.js",
   "scripts": {
