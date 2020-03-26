@@ -22,7 +22,7 @@ describe('Test utils', () => {
       let b = { name: 'Aemmmm^', age: 18, children: ['1', '2'] }
       utils.matchObject(a, b).should.be.true()
     })
-    
+
     it('正则匹配的应该返回false', () => {
       let a = { name: 'Aemmmm', age: 18, children: ['1', '2'] }
       let b = { name: '/^A.*\\^$/', age: '/\\d/', children: ['*', '2'] }
@@ -37,7 +37,7 @@ describe('Test utils', () => {
       b = { name: 'xiaoming', age: 18, car: { type: 1 } }
       utils.matchObject(a, b).should.not.be.true()
     })
-    
+
     it('类型不一致应该返回false', () => {
       let a = { name: 'xiaoming', age: 18, children: {} }
       let b = { name: 'xiaoming', age: 18, children: 'c' }
@@ -79,7 +79,7 @@ describe('Test utils', () => {
       fs.writeFileSync(file, 'hello, world', 'utf-8')
     })
 
-    it('测试watch异常', () => 
+    it('测试watch异常', () =>
       should.throws(
         () => utils.watch(['./no-such-file']),
         /^Error: .\/no-such-file does not exist./
@@ -133,7 +133,7 @@ describe('Test utils', () => {
           join(__dirname + '/test-file/header.txt')
         ])
     })
-    
+
     it('获取目录下所有文件', () => {
       utils.files(join(__dirname, './test-file/'), [])
         .should.be.eql([
@@ -154,6 +154,15 @@ describe('Test utils', () => {
         .should.be.eql({ name: 'tom' })
     })
 
+    it('读取js文件内容每次都是最新的', () => {
+      const filepath = join(__dirname, 'testReadFile.js')
+      fs.writeFileSync(filepath, 'module.exports = 1')
+      utils.readFile(filepath).should.be.eql(1)
+      fs.writeFileSync(filepath, 'module.exports = 2')
+      utils.readFile(filepath).should.be.eql(2)
+      fs.unlinkSync(filepath)
+    })
+
     it('读取a.json文件内容', () => {
       utils.readFile(join(__dirname, './test-file/a'))
         .should.be.eql({
@@ -161,7 +170,7 @@ describe('Test utils', () => {
           body: { name: 'tom' }
         })
     })
-    
+
     it('读取header.txt文件内容, 并配置response header', () => {
       let ctx = new Map()
       utils.readFile(join(__dirname, './test-file/header'))
@@ -176,7 +185,7 @@ describe('Test utils', () => {
           body: { name: 'tom' }
         })
     })
-    
+
     it('兼容CRLF格式的.txt文件', () => {
       let ctx = new Map()
       utils.readFile(join(__dirname, './test-file/crlf'))
