@@ -21,7 +21,7 @@ module.exports = {
     options.confFile &&
       utils.watch([options.confFile], file => {
         console.warn(`${file} changed!`)
-        delete require.cache[file]
+        utils.cleanCache(file)
         handleConfig(options)
       })
 
