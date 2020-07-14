@@ -6,6 +6,7 @@
 [![npm](https://img.shields.io/npm/v/cf-mock-server.svg)](https://www.npmjs.com/package/cf-mock-server)
 [![node version](https://img.shields.io/badge/node.js-%3E=_7.10.1-green.svg)](http://nodejs.org/download/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xiao555/mock-server/blob/master/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxiao555%2Fmock-server.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxiao555%2Fmock-server?ref=badge_shield)
 
 一个轻量化的本地mock服务器
 
@@ -223,3 +224,6 @@ mock.run()
 ## LICENSE
 
 [MIT](https://opensource.org/licenses/MIT)
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxiao555%2Fmock-server.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxiao555%2Fmock-server?ref=badge_large)
